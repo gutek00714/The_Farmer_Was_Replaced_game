@@ -48,6 +48,11 @@ It defines the global farm cycle — planting, harvesting, and resource rotation
 - Resets the drone to the starting position each cycle
 
 
+### Rest of the Scripts
+These are **experimental scripts**, each performing a **single specific task** (as indicated by their file names) across the entire farm.  
+I use them whenever I need to quickly gather or produce a particular resource.
+
+
 ## Ideas & Next Steps
 - Rewrite `main.py` to fully support **multi-drone farming**.  
 - Move all drone-related functions into `modules.py`, making them **coordinate-independent** and reusable in any context.  
