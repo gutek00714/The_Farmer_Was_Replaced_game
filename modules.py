@@ -47,27 +47,6 @@ def harvest_and_carrots():
 		till()
 	plant(Entities.Carrot)
 
-#SUNFLOWERS
-def set_sunflower_list(sunflower_list):
-	x = get_pos_x()
-	y = get_pos_y()
-	sunflower_list.append({'x': get_pos_x(), 'y': get_pos_y(), "petals": measure()})
-	#quick_print(sunflower_list)
-		
-def sunflower_list_check(sunflower_list):
-	max_petals = sunflower_list[0]
-	for i in sunflower_list:
-		if i['petals'] > max_petals['petals']:
-			max_petals = i
-	return max_petals
-	
-def harvest_sunflower(sunflower_list):
-	max_petals = sunflower_list_check(sunflower_list)
-	position(max_petals['x'], max_petals['y'])
-	harvest()
-	sunflower_list.remove(max_petals)
-	#start_position()
-		
 #MAZE TREASURE + MOVEMENT
 def harvest_treasure():
 	#position_list = []
@@ -170,11 +149,12 @@ def maze_drone(x, y, size):
 		change_hat(Hats.Purple_Hat)
 		
 		while True:
-			position(x, y) #13 3 6
+			position(x, y)
 			harvest()
 			plant(Entities.Bush)
-			use_item(Items.Weird_Substance, size)
+			use_item(Items.Weird_Substance, 4* size)
 			harvest_treasure()
+			#do_a_flip()
 	return inner
 
 #DRONE CACTUS
@@ -225,8 +205,9 @@ def cactus(start_x, start_y, c, r, i):
 			if x + y >= c + r - i:
 				break
 
+
 #DRONE PUMPKIN
-#x = position x, y = position y, c = number of pumpkins in column, r = number of pumpkins in row
+#start_x = position x, start_y = position y, c = number of pumpkins in column, r = number of pumpkins in row
 # def pumpkin_drone(start_x, start_y, c, r):
 # 	def inner():
 # 		pumpkin_list = init_pumpkin_list(c, r)
@@ -244,7 +225,6 @@ def cactus(start_x, start_y, c, r, i):
 # 					move(North)
 # 				x += 1
 # 				position(x, y)
-			
 			
 # 	return inner	
 
@@ -297,4 +277,117 @@ def pumpkin_drone2(start_x, start_y, c, r):
 					
 			harvest()
 			do_a_flip()
+	return inner
+
+#DRONE SUNFLOWERS
+#start_x = position x, start_y = position y, c = number of sunflowers in column, r = number of sunflowers in row
+def sunflower_drone(start_x, start_y, c, r):
+	def inner():
+		change_hat(Hats.Sunflower_Hat)
+		sunflower_list = []
+		list_len = c * r
+		while True:
+			while len(sunflower_list) != list_len:
+				x = start_x
+				position(start_x, start_y)
+				for i in range(r):
+					for j in range(c):
+						if get_entity_type() != Entities.Sunflower:
+							harvest()
+						if get_ground_type() == Grounds.Grassland:
+							till()
+						if get_entity_type() == None:
+							plant(Entities.Sunflower)
+							use_item(Items.Water)
+						set_sunflower_list(sunflower_list)
+						move(North)
+					x += 1
+					position(x, start_y)
+			while len(sunflower_list) > 0:
+				harvest_sunflower(sunflower_list)
+			sunflower_list = []
+	return inner
+
+def set_sunflower_list(sunflower_list):
+	x = get_pos_x()
+	y = get_pos_y()
+	sunflower_list.append({'x': get_pos_x(), 'y': get_pos_y(), "petals": measure()})
+	#quick_print(sunflower_list)
+		
+def sunflower_list_check(sunflower_list):
+	max_petals = sunflower_list[0]
+	for i in sunflower_list:
+		if i['petals'] > max_petals['petals']:
+			max_petals = i
+	return max_petals
+	
+def harvest_sunflower(sunflower_list):
+	max_petals = sunflower_list_check(sunflower_list)
+	position(max_petals['x'], max_petals['y'])
+	harvest()
+	sunflower_list.remove(max_petals)
+	
+#DRONE FERTILIZER
+#start_x = position x, start_y = position y, c = number of plants in column, r = number of plants in row
+def fertilize_drone(start_x, start_y, c, r):
+	def inner():
+		change_hat(Hats.Wizard_Hat)
+		while True:
+			x = start_x
+			position(start_x, start_y)
+			for i in range(r):
+				for j in range(c):
+					position(x, start_y + j)
+					harvest()
+					plant(Entities.Grass)
+					use_item(Items.Fertilizer)
+				x += 1
+
+	return inner
+	
+#DRONE CARROTS
+#start_x = position x, start_y = position y, c = number of plants in column, r = number of plants in row
+def carrots_drone(start_x, start_y, c, r):
+	def inner():
+		change_hat(Hats.Carrot_Hat)
+		while True:
+			x = start_x
+			position(start_x, start_y)
+			for i in range(r):
+				for j in range(c):
+					position(x, start_y + j)
+					if can_harvest():
+						harvest()
+					if get_ground_type() == Grounds.Grassland:
+						till()
+					plant(Entities.Carrot)
+				x += 1	
+	return inner
+
+#FLIP DRONE - achievement
+def flip_drone(start_x, start_y):
+	def inner():
+		change_hat(Hats.Traffic_Cone)
+		position(start_x, start_y)
+		while True:
+			do_a_flip()
+	return inner
+	
+#TREES DRONE
+#start_x = position x, start_y = position y, c = number of plants in column, r = number of plants in row
+def trees_drone(start_x, start_y, c, r):
+	def inner():
+		change_hat(Hats.Tree_Hat)
+		while True:
+			x = start_x
+			position(start_x, start_y)
+			for i in range(r):
+				for j in range(c):
+					position(x, start_y + j)
+					if (get_pos_x() + get_pos_y()) % 2 == 0:
+						harvest()
+						plant(Entities.Tree)
+					elif (get_pos_x() + get_pos_y()) % 2 != 0:
+						harvest()
+				x += 1	
 	return inner
