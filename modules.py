@@ -280,7 +280,7 @@ def pumpkin_drone2(start_x, start_y, c, r):
 	return inner
 
 #DRONE SUNFLOWERS
-#start_x = position x, start_y = position y, c = number of sunflowers in column, r = number of sunflowers in row
+#start_x = position x, start_y = position y, c = number of plants in column, r = number of plants in row
 def sunflower_drone(start_x, start_y, c, r):
 	def inner():
 		change_hat(Hats.Sunflower_Hat)
@@ -288,9 +288,8 @@ def sunflower_drone(start_x, start_y, c, r):
 		list_len = c * r
 		while True:
 			while len(sunflower_list) != list_len:
-				x = start_x
-				position(start_x, start_y)
 				for i in range(r):
+					position(start_x + i, start_y)
 					for j in range(c):
 						if get_entity_type() != Entities.Sunflower:
 							harvest()
@@ -301,8 +300,6 @@ def sunflower_drone(start_x, start_y, c, r):
 							use_item(Items.Water)
 						set_sunflower_list(sunflower_list)
 						move(North)
-					x += 1
-					position(x, start_y)
 			while len(sunflower_list) > 0:
 				harvest_sunflower(sunflower_list)
 			sunflower_list = []
