@@ -1,5 +1,10 @@
 import modules
 modules.start_position()
 spawn_drone(modules.maze_drone(13, 3, 6))
-spawn_drone(modules.cactus_drone(11, 6, 8, 5))
-spawn_drone(modules.pumpkin_drone2(0, 0, 6, 6))
+spawn_drone(modules.cactus_drone(10, 6, 8, 6))
+spawn_drone(modules.sunflower_drone(8, 0, 16, 2))
+spawn_drone(modules.fertilize_drone(10, 14, 2, 6))
+spawn_drone(modules.carrots_drone(6, 0, 16, 2))
+spawn_drone(modules.flip_drone(0, 15))
+spawn_drone(modules.trees_drone(0, 6, 10, 6))
+modules.pumpkin_drone2(0, 0, 6, 6)()
