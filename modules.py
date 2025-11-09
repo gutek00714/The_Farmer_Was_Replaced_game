@@ -152,7 +152,7 @@ def maze_drone(x, y, size):
 			position(x, y)
 			harvest()
 			plant(Entities.Bush)
-			use_item(Items.Weird_Substance, 4* size)
+			use_item(Items.Weird_Substance, 8* size)
 			harvest_treasure()
 			#do_a_flip()
 	return inner
@@ -161,22 +161,16 @@ def maze_drone(x, y, size):
 #x2 = position x, y = position y, c = number of cacti in column, r = number of cacti in row
 def cactus_drone(x2, y, c, r):
 	def inner2():
-		#nonlocal x, y
 		change_hat(Hats.Cactus_Hat)
 		
 		while True:
-			x = x2
-			#x = 11
-			position(x2, y)
 			for i in range(r):
 				for j in range(c):
+					position(x2 + i, y + j)
 					harvest()
 					if get_ground_type() == Grounds.Grassland:
 						till()
 					plant(Entities.Cactus)
-					move(North)
-				x += 1
-				position(x, y)
 			for i in range(c + r - 1):
 				cactus(x2, y, c, r, i)
 			do_a_flip()
@@ -207,7 +201,7 @@ def cactus(start_x, start_y, c, r, i):
 
 
 #DRONE PUMPKIN
-#start_x = position x, start_y = position y, c = number of pumpkins in column, r = number of pumpkins in row
+#start_x = position x, start_y = position y, c = number of plants in column, r = number of plants in row
 # def pumpkin_drone(start_x, start_y, c, r):
 # 	def inner():
 # 		pumpkin_list = init_pumpkin_list(c, r)
@@ -240,33 +234,31 @@ def pumpkin_drone2(start_x, start_y, c, r):
 		change_hat(Hats.Pumpkin_Hat)
 		while True:
 			pumpkin_list = []
-			x = start_x
-			position(start_x, start_y)
 			for i in range(r):
 				for j in range(c):
+					if i % 2 == 0:
+						position(start_x + i, start_y + j)
+					else:
+						position(start_x + i, start_y + (c - 1 - j))
 					pumpkin_list.append(get_entity_type())
 					harvest()
 					if get_ground_type() == Grounds.Grassland:
 						till()
 					plant(Entities.Pumpkin)
 					use_item(Items.Water)
-					move(North)
-				x += 1
-				position(x, start_y)
 
 			position(start_x, start_y)
 			
 			is_done = False
 			while not is_done:
-			
-				x = start_x
 				for i in range(r):
 					for j in range(c):
+						if i % 2 == 0:
+							position(start_x + i, start_y + j)
+						else:
+							position(start_x + i, start_y + (c - 1 - j))
 						pumpkin_list.append(get_entity_type())
 						plant(Entities.Pumpkin)
-						move(North)
-					x += 1
-					position(x, start_y)
 					
 				position(start_x, start_y)
 					
@@ -276,7 +268,6 @@ def pumpkin_drone2(start_x, start_y, c, r):
 				pumpkin_list = []
 					
 			harvest()
-			do_a_flip()
 	return inner
 
 #DRONE SUNFLOWERS
@@ -289,8 +280,8 @@ def sunflower_drone(start_x, start_y, c, r):
 		while True:
 			while len(sunflower_list) != list_len:
 				for i in range(r):
-					position(start_x + i, start_y)
 					for j in range(c):
+						position(start_x + i, start_y + j)
 						if get_entity_type() != Entities.Sunflower:
 							harvest()
 						if get_ground_type() == Grounds.Grassland:
@@ -299,7 +290,6 @@ def sunflower_drone(start_x, start_y, c, r):
 							plant(Entities.Sunflower)
 							use_item(Items.Water)
 						set_sunflower_list(sunflower_list)
-						move(North)
 			while len(sunflower_list) > 0:
 				harvest_sunflower(sunflower_list)
 			sunflower_list = []
@@ -318,11 +308,23 @@ def sunflower_list_check(sunflower_list):
 			max_petals = i
 	return max_petals
 	
+#def harvest_sunflower(sunflower_list):
+#	max_petals = sunflower_list_check(sunflower_list)
+#	position(max_petals['x'], max_petals['y'])
+#	harvest()
+#	sunflower_list.remove(max_petals)
+
+#spawn multiple drones to harvest sunflowers
 def harvest_sunflower(sunflower_list):
 	max_petals = sunflower_list_check(sunflower_list)
-	position(max_petals['x'], max_petals['y'])
-	harvest()
+	spawn_drone(i_am_speed(max_petals['x'], max_petals['y']))
 	sunflower_list.remove(max_petals)
+
+def i_am_speed(x, y):
+	def inner():
+		position(x, y)
+		harvest()
+	return inner
 	
 #DRONE FERTILIZER
 #start_x = position x, start_y = position y, c = number of plants in column, r = number of plants in row
@@ -372,7 +374,7 @@ def flip_drone(start_x, start_y):
 	
 #TREES DRONE
 #start_x = position x, start_y = position y, c = number of plants in column, r = number of plants in row
-def trees_drone(start_x, start_y, c, r):
+def trees_drone(start_x, start_y, c, r, subst = False):
 	def inner():
 		change_hat(Hats.Tree_Hat)
 		while True:
@@ -384,7 +386,84 @@ def trees_drone(start_x, start_y, c, r):
 					if (get_pos_x() + get_pos_y()) % 2 == 0:
 						harvest()
 						plant(Entities.Tree)
+						use_item(Items.Water)
 					elif (get_pos_x() + get_pos_y()) % 2 != 0:
 						harvest()
+						if subst == True:
+							use_item(Items.Fertilizer)
 				x += 1	
+	return inner
+
+#DINO DRONE
+def dino_drone():
+	change_hat(Hats.Dinosaur_Hat)
+	while True:
+		next_x, next_y = measure()
+		quick_print(next_x, next_y)
+		if position(next_x, next_y) == False:
+			break
+	change_hat(Hats.Brown_Hat)
+	
+#HAY DRONE
+#start_x = position x, start_y = position y, c = number of plants in column, r = number of plants in row
+def hay_drone(start_x, start_y, c, r):
+	def inner():
+		change_hat(Hats.Straw_Hat)
+		while True:
+			for i in range(r):
+				for j in range(c):
+					position(start_x + i, start_y + j)
+					if can_harvest():
+						harvest()
+					plant(Entities.Grass)
+	return inner
+
+#SUNFLOWERS DRONE MULTI DRONE PLANT
+#start_x = position x, start_y = position y, c = number of plants in column, r = number of plants in row, n = number of drones
+def sunflower_drone_main(start_x, start_y, c, r, n = 1):
+	def inner():
+		change_hat(Hats.Sunflower_Hat)
+		position(start_x, start_y)
+		while True:
+			sunflower_list = []
+			divide_field = r // n
+			modulo = r % n
+			#n = 4 r = 22 positions = 0(+ modulo) 7 12 17
+			#spawn new planting drones
+			for i in range(n - 1):
+				x = start_x + modulo + (i + 1) * divide_field
+				spawn_drone(plant_sunflowers(x, start_y, c, divide_field))
+			
+			#main drone plant
+			plant_sunflowers(start_x, start_y, c, divide_field + modulo)()
+			
+			#main drone make list
+			for i in range(r):
+				for j in range(c):
+					if i % 2 == 0:
+						position(start_x + i, start_y + j)
+					else:
+						position(start_x + i, start_y + (c - 1 - j))
+					set_sunflower_list(sunflower_list)
+					
+			position(start_x, start_y)
+			while len(sunflower_list) > 0:
+				harvest_sunflower(sunflower_list)
+			sunflower_list = []
+			do_a_flip()
+		
+	return inner
+	
+def plant_sunflowers(start_x, start_y, c, r):
+	def inner():
+		for i in range(r):
+			for j in range(c):
+				position(start_x + i, start_y + j)
+				if get_entity_type() != Entities.Sunflower:
+					harvest()
+				if get_ground_type() == Grounds.Grassland:
+					till()
+				if get_entity_type() == None:
+					plant(Entities.Sunflower)
+					use_item(Items.Water)
 	return inner
