@@ -82,4 +82,6 @@ I use them whenever I need to quickly gather or produce a particular resource.
 ## Ideas & Next Steps
 - ~~Rewrite `main.py` to fully support **multi-drone farming**.~~
 - ~~Move all drone-related functions into `modules.py`, making them **coordinate-independent** and reusable in any context.~~  
-- Unlock and integrate **bones** as a new gameplay mechanic or resource.
+- ~~Unlock and integrate **bones** as a new gameplay mechanic or resource.~~
+- Perfect a function to farm bones.
+- Add polyculture.
