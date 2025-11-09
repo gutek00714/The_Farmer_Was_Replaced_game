@@ -1,0 +1,9 @@
+import modules
+modules.start_position()
+spawn_drone(modules.maze_drone(15, 15, 8))
+do_a_flip()
+spawn_drone(modules.maze_drone(15, 0, 8))
+do_a_flip()
+spawn_drone(modules.maze_drone(0, 15, 8))
+do_a_flip()
+spawn_drone(modules.maze_drone(0, 0, 8))
