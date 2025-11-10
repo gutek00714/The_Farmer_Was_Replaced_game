@@ -1,0 +1,47 @@
+# this is a reversed sorting function that is needed to get an achievement
+
+import modules
+set_world_size(8)
+
+def cactus_drone(x2, y, c, r):
+	def inner2():
+		change_hat(Hats.Cactus_Hat)
+		
+		while True:
+			for i in range(r):
+				for j in range(c):
+					modules.position(x2 + i, y + j)
+					harvest()
+					if get_ground_type() == Grounds.Grassland:
+						till()
+					plant(Entities.Cactus)
+			for i in range(c + r - 1):
+				cactus(x2, y, c, r, i)
+			modules.position(0, 8)
+			harvest()
+	return inner2
+			
+def cactus(start_x, start_y, c, r, i):
+	for x in range(r):
+		for y in range(c):
+			modules.position(x + start_x, y + start_y)
+			m = measure()
+			if y < c - 1:
+				n = measure(North)
+			else:
+				n = -1  
+				
+			if x < r - 1:
+				e = measure(East)
+			else:
+				e = -1  
+				
+			if m < n and n >= e:
+				swap(North)
+			elif m < e:
+				swap(East)
+				
+			if x + y >= c + r - i: 
+				break
+				
+spawn_drone(cactus_drone(0, 0, 8, 8))
