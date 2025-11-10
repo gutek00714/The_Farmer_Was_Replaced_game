@@ -467,3 +467,26 @@ def plant_sunflowers(start_x, start_y, c, r):
 					plant(Entities.Sunflower)
 					use_item(Items.Water)
 	return inner
+
+#polyculture 1 drone
+def polyculture_drone(start_x, start_y, type):
+	def inner():
+		while True:
+			position(start_x, start_y)
+			if (type == Entities.Carrot or type == Entities.Sunflower or type == Entities.Cactus or type == Entities.Pumpkin) and get_ground_type() != Grounds.Soil:
+				till()
+			plant(type)
+			use_item(Items.Water)
+			#use_item(Items.Fertilizer)
+			#use_item(Items.Weird_Substance)
+			plant_type, (x, y) = get_companion()
+			position(x, y)
+			harvest()
+			if plant_type == Entities.Carrot and get_ground_type != Grounds.Soil:
+				till()
+			plant(plant_type)
+			position(start_x, start_y)
+			while can_harvest() == False:
+				pass
+			harvest()
+	return inner
