@@ -84,4 +84,4 @@ I use them whenever I need to quickly gather or produce a particular resource.
 - ~~Move all drone-related functions into `modules.py`, making them **coordinate-independent** and reusable in any context.~~  
 - ~~Unlock and integrate **bones** as a new gameplay mechanic or resource.~~
 - Perfect a function to farm bones.
-- Add polyculture.
+- ~~Add polyculture.~~
